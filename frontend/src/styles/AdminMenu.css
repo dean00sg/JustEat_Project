@@ -1,0 +1,169 @@
+/* General styles for the AdminMenu page */
+.admin-menu-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #f5f5f5; /* Light gray background */
+    color: #333; /* Dark gray text */
+    padding: 2rem;
+    padding-top: 60px;
+  }
+  
+  .admin-menu-form-container {
+    background: #ffffff; /* White background for form */
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .admin-menu-form-title {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #000; /* Black text */
+    text-align: center;
+  }
+  
+  .admin-menu-form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .admin-menu-form-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .admin-menu-form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    color: #000; /* Black text */
+  }
+  
+  .admin-form-input,
+  .admin-form-select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd; /* Light gray border */
+    border-radius: 4px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    background-color: #fff; /* White background for inputs */
+    color: #333; /* Dark gray text */
+  }
+  
+  .admin-form-input[type="file"] {
+    padding: 0.5rem;
+  }
+  
+  .admin-form-input[type="number"] {
+    -moz-appearance: textfield;
+  }
+  
+  .admin-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: #333; /* Dark gray background */
+    color: #fff; /* White text */
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    text-transform: uppercase;
+    margin: 0.5rem 0;
+    white-space: nowrap;
+    text-align: center;
+  }
+  
+  .admin-button:hover {
+    background-color: #000; /* Black on hover */
+  }
+  
+  .admin-add-category-button {
+    background-color: #444; /* Slightly lighter dark gray for add category */
+  }
+  
+  .admin-add-category-button:hover {
+    background-color: #222; /* Even darker gray on hover */
+  }
+  
+  .admin-remove-category-button {
+    background-color: #e74c3c; /* Red background for remove button */
+    color: #fff; /* White text */
+    width: 80px; /* Set a fixed width for the remove button */
+  }
+  
+  .admin-remove-category-button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+  }
+  
+  .admin-add-option-button {
+    background-color: #555; /* Darker gray for add option */
+  }
+  
+  .admin-add-option-button:hover {
+    background-color: #333; /* Darker gray on hover */
+  }
+  
+  .admin-remove-option-button {
+    background-color: #e74c3c; /* Red background for remove option */
+    color: #fff; /* White text */
+    width: 80px; /* Set a fixed width for the remove button */
+  }
+  
+  .admin-remove-option-button:hover {
+    background-color: #c0392b; /* Darker red on hover */
+  }
+  
+  .admin-submit-button {
+    background-color: #444; /* Dark gray for submit button */
+    margin-top: 1rem;
+  }
+  
+  .admin-submit-button:hover {
+    background-color: #222; /* Darker gray on hover */
+  }
+  
+  .admin-category-container,
+  .admin-option-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .admin-category-list,
+  .admin-option-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .admin-category-item,
+  .admin-option-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem;
+    border-bottom: 1px solid #ddd; /* Light gray border */
+  }
+  
+  .admin-category-item:last-child,
+  .admin-option-item:last-child {
+    border-bottom: none;
+  }
+  
+  .admin-option-item {
+    font-size: 0.875rem;
+  }
+  
+  .admin-form-input {
+    margin-bottom: 0.5rem;
+    width: calc(100% - 2rem);
+  }
+  

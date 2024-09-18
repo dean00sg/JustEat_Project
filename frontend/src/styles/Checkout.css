@@ -1,0 +1,227 @@
+/* src/styles/Checkout.css */
+
+.checkout-page {
+    font-family: Arial, sans-serif;
+    padding-top: 60px; /* Ensure space for Navbar */
+    background-color: #f8f8f8;
+  }
+  
+  .checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .order-summary-section {
+    margin-bottom: 40px;
+  }
+  
+  .checkout-title {
+    font-size: 32px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #333;
+  }
+  
+  .checkout-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    margin-bottom: 20px; /* Margin between items */
+  }
+  
+  .checkout-item-image {
+    max-width: 150px;
+    height: auto;
+    border-radius: 8px;
+    margin-right: 20px;
+  }
+  
+  .checkout-item-details {
+    flex: 1;
+  }
+  
+  .checkout-item-title {
+    font-size: 20px;
+    margin: 0;
+    text-align: left;
+  }
+  
+  .checkout-item-quantity,
+  .checkout-item-options,
+  .checkout-item-price {
+    font-size: 16px;
+    color: #666;
+    margin: 5px 0;
+  }
+  
+  .checkout-item-price {
+    font-weight: bold;
+  }
+  
+  .checkout-total {
+    margin-top: 30px;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: right;
+  }
+  
+  .payment-details-section {
+    background-color: #f1f1f1;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .checkout-payment-details {
+    margin-bottom: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+  
+  .checkout-payment-details h3 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 15px;
+  }
+  
+  .checkout-payment-details p {
+    margin: 10px 0;
+    color: #333;
+    font-size: 18px;
+  }
+  
+  .checkout-payment-details p strong {
+    font-size: 20px;
+    color: #000;
+  }
+  
+  .checkout-payment-details .account-number {
+    font-size: 22px;
+    font-weight: bold;
+    color: #007bff; /* A standout color for the account number */
+  }
+  
+  .checkout-upload {
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .checkout-upload label {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #333;
+  }
+  
+  .checkout-upload input[type="file"] {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+  }
+  
+  .checkout-upload input[type="file"]:hover {
+    border-color: #333;
+  }
+  
+  .checkout-upload input[type="file"]::file-selector-button {
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .checkout-upload input[type="file"]::file-selector-button:hover {
+    background-color: #555;
+  }
+  
+  .checkout-confirm-button {
+    display: block;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    padding: 15px 20px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+    margin-top: 20px;
+  }
+  
+  .checkout-confirm-button:hover {
+    background-color: #555;
+  }
+  
+  .popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .popup-content {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .popup-content h2 {
+    margin-top: 0;
+    font-size: 28px;
+    color: #28a745; /* Green color for success */
+  }
+  
+  .popup-content p {
+    font-size: 18px;
+    color: #333;
+    margin: 20px 0;
+  }
+  
+  .popup-close-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .popup-close-button:hover {
+    background-color: #218838;
+  }
+  

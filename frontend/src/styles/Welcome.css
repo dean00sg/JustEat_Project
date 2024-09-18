@@ -1,0 +1,123 @@
+/* src/styles/Welcome.css */
+.welcome {
+    position: relative;
+    min-height: 100vh;
+    overflow: hidden;
+  }
+  
+  /* Hero Section */
+  .hero-section {
+    background: url('../assets/picture/bgpromote.png') no-repeat center center/cover;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 60vh;
+    padding: 0 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  /* Overlay */
+  .hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* สีดำที่มีความโปร่งแสง */
+    z-index: 0;
+  }
+  
+  /* Hero Content */
+  .hero-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  .hero-section h1 {
+    font-size: 60px;
+    margin: 0 0 20px;
+    font-weight: bold;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  }
+  
+  .hero-section p {
+    font-size: 24px;
+    margin-bottom: 30px;
+    line-height: 1.4;
+  }
+  
+  .home-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 15px 30px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #333;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background-color 0.3s, transform 0.3s;
+  }
+  
+  .home-button:hover {
+    background-color: #555;
+    transform: scale(1.05);
+  }
+  
+  .arrow-icon {
+    margin-left: 10px;
+    font-size: 24px;
+  }
+  
+  /* Promotions */
+  .promotions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+  
+  .promotion-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 350px;
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+    transform: scale(1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .promotion-item:hover {
+    transform: scale(1.05);
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .promotion-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+  }
+  
+  .promotion-details {
+    padding: 20px;
+    text-align: center;
+  }
+  
+  .promotion-details h2 {
+    font-size: 24px;
+    margin: 10px 0;
+  }
+  
+  .promotion-details p {
+    font-size: 18px;
+    color: #555;
+  }
+  

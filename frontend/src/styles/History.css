@@ -1,0 +1,146 @@
+/* src/styles/History.css */
+
+.history-page {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background-color: #f9f9f9;
+  padding-top: 60px;
+  min-height: 100vh;
+}
+
+.history-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.history-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 2em;
+  color: #333;
+}
+
+.history-empty-message {
+  text-align: center;
+  font-size: 1.2em;
+  color: #777;
+}
+
+.history-order {
+  margin-bottom: 20px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 20px;
+}
+
+.history-order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+}
+
+.history-order-id {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #007bff;
+}
+
+.history-order-date {
+  font-size: 0.9em;
+  color: #888;
+}
+
+.history-order-status {
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: #fff;
+}
+
+.status-in-progress {
+  background-color: #ffc107;
+}
+
+.status-complete {
+  background-color: #28a745;
+}
+
+.status-cancel {
+  background-color: #dc3545;
+}
+
+.history-order-total {
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #333;
+}
+
+.history-order-items {
+  padding-top: 10px;
+}
+
+.history-order-item {
+  display: flex;
+  margin-bottom: 10px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+}
+
+.history-order-item-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-right: 15px;
+}
+
+.history-order-item-details {
+  flex: 1;
+}
+
+.history-order-item-title {
+  font-size: 1.1em;
+  color: #333;
+  margin: 0;
+}
+
+.history-order-item-quantity,
+.history-order-item-price {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.history-order-item-options ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.option-item {
+  font-size: 0.9em;
+  color: #555;
+}
+
+.history-order-item-note {
+  margin-top: 10px;
+}
+
+.history-order-item-note h4 {
+  margin: 0;
+  font-weight: bold;
+  color: #333;
+}
+
+.history-order-item-note p {
+  margin: 0;
+  font-size: 0.9em;
+  color: #555;
+}

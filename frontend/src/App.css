@@ -1,0 +1,166 @@
+/* General Reset */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #000; /* พื้นหลังสีดำ */
+  color: #fff; /* สีข้อความสีขาวเพื่อให้ตัดกับพื้นหลัง */
+  padding: 10px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3); /* เงาที่เข้มขึ้น */
+  z-index: 1000;
+  border-bottom: 1px solid #444; /* ขอบที่กลืนไปกับพื้นหลัง */
+}
+
+.navbar h1 {
+  font-size: 26px;
+  font-weight: bold;
+  color: #fff; /* ข้อความสีขาว */
+}
+
+.navbar-icons {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.navbar-icons input {
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #555;
+  background-color: #333; /* สีพื้นหลังของช่องค้นหาให้เข้ากับพื้นหลัง navbar */
+  color: #fff;
+  transition: background 0.3s, border-color 0.3s;
+}
+
+.navbar-icons input:focus {
+  background-color: #444; /* สีเข้มขึ้นเมื่อ focus */
+  border-color: #63666a;
+  outline: none;
+}
+
+.navbar-icons .icon {
+  font-size: 20px;
+  color: #fff; /* สีไอคอนสีขาว */
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.navbar-icons .icon:hover {
+  color: #d4d3d3; /* สีฟ้าเมื่อ hover */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px;
+  }
+
+  .navbar-icons {
+    margin-top: 10px;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar-icons input {
+    width: 100%;
+  }
+}
+
+/* Categories */
+.categories {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+  padding-top: 80px; /* ปรับ padding เพื่อให้ไม่ทับกับ navbar */
+}
+
+.category {
+  background: #f4f4f4;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin: 0 10px;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+  color: #333;
+}
+
+.category:hover {
+  background: #bfbfbf;
+  color: #fff;
+}
+
+.category.active {
+  background: #333;
+  color: #fff;
+}
+
+/* Food List */
+.food-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+  padding: 20px 20px;
+}
+
+.food-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 200px;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 12px; /* ขอบมุมโค้งมนมากขึ้น */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* เงาที่ใหญ่ขึ้น */
+  text-decoration: none;
+  color: #333;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.food-item:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-5px); /* ยกขึ้นเมื่อ hover */
+}
+
+.food-image {
+  width: 100%;
+  height: 150px; /* ปรับความสูงเพื่อให้ดูชัดเจนขึ้น */
+  object-fit: cover;
+  border-bottom: 1px solid #ddd;
+  border-radius: 12px 12px 0 0; /* ปรับให้โค้งด้านบน */
+}
+
+.food-details {
+  padding: 15px;
+}
+
+.food-details h2 {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.food-details p {
+  font-size: 16px;
+  color: #007bff;
+}
+
+.food-item:hover .food-details h2 {
+  color: #007bff; /* เปลี่ยนสีหัวข้อเมื่อ hover */
+}
