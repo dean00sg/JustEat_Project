@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  postgresql:
+    image: postgres:13
+    container_name: postgresql-serverjusteat
+    environment:
+      - POSTGRES_PASSWORD=123456
+    ports:
+      - "5555:5432"
+    networks:
+      - pg-network
+    command: postgres -c listen_addresses='*'
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=6410110282@psu.ac.th  # Placeholder email
+      - PGADMIN_DEFAULT_PASSWORD=123456
+    ports:
+      - "8081:80"
+    networks:
+      - pg-network
+
+networks:
+  pg-network:
+    driver: bridge
