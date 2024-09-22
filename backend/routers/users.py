@@ -19,10 +19,8 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
     hashed_password = auth_handler.get_password_hash(user.password)
     
     db_user = UserProfile(
-        first_name=user.first_name,
-        last_name=user.last_name,
+        username=user.username,
         email=user.email,
-        contact_number=user.contact_number,
         password=hashed_password,
         role=user.role
     )
@@ -34,10 +32,8 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
         action_name="insert",
         action_datetime=datetime.now(),
         user_id=db_user.user_id,
-        first_name=db_user.first_name,
-        last_name=db_user.last_name,
+        username=db_user.username,
         email=db_user.email,
-        contact_number=db_user.contact_number,
         password=db_user.password,
         role=db_user.role
     )
@@ -70,10 +66,8 @@ async def login(
             action_name="login",
             action_datetime=datetime.now().replace(microsecond=0),
             user_id=user.user_id,
-            first_name=user.first_name,
-            last_name=user.last_name,
+            username=user.username,
             email=user.email,
-            contact_number=user.contact_number,
             password=access_token,  # For consistency, using access_token as placeholder
             role=user.role
         )
@@ -85,7 +79,7 @@ async def login(
         "access_token": access_token,
         "token_type": "bearer",
         "user_id": user.user_id,
-        "name": f"{user.first_name} {user.last_name}",
+        "username": user.username,
         "role": user.role
     }
 
@@ -114,10 +108,8 @@ async def update_user(
         action_name="update",
         action_datetime=datetime.now().replace(microsecond=0), 
         user_id=user.user_id,
-        first_name=user.first_name,
-        last_name=user.last_name,
+        username=user.username,
         email=user.email,
-        contact_number=user.contact_number,
         password=user.password,
         role=user.role
     )
@@ -125,18 +117,12 @@ async def update_user(
     if update_data.new_password:
         user.password = auth_handler.get_password_hash(update_data.new_password)
         log_entry.password = user.password
-    if update_data.first_name:
-        log_entry.to_first_name = update_data.first_name
-        user.first_name = update_data.first_name
-    if update_data.last_name:
-        log_entry.to_last_name = update_data.last_name
-        user.last_name = update_data.last_name
+    if update_data.username:
+        log_entry.to_username = update_data.username
+        user.username = update_data.username
     if update_data.email:
         log_entry.to_email = update_data.email
         user.email = update_data.email
-    if update_data.contact_number:
-        log_entry.to_contact_number = update_data.contact_number
-        user.contact_number = update_data.contact_number
 
     session.add(log_entry)
     session.add(user)
@@ -146,10 +132,8 @@ async def update_user(
     return UpdateUserResponse(
         status="User updated successfully",
         user_id=user.user_id,
-        first_name=user.first_name,
-        last_name=user.last_name,
+        username=user.username,
         email=user.email,
-        contact_number=user.contact_number,
         role=user.role
     )
 
@@ -166,10 +150,8 @@ async def delete_user(
         action_name="delete",
         action_datetime=datetime.now().replace(microsecond=0), 
         user_id=user.user_id,
-        first_name=user.first_name,
-        last_name=user.last_name,
+        username=user.username,
         email=user.email,
-        contact_number=user.contact_number,
         password=user.password,
         role=user.role
     )
@@ -177,10 +159,8 @@ async def delete_user(
     delete_response = DeleteResponse(
         status="User deleted successfully",
         id=user.user_id,
-        first_name=user.first_name,
-        last_name=user.last_name,
+        username=user.username,
         email=user.email,
-        contact_number=user.contact_number,
         role=user.role
     )
 
