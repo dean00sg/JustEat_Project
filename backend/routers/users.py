@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, Depends, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from security import AuthHandler, Token
-from models.users import LogUserProfile, UpdateUser, UserCreate, UserUpdate, UpdateUserResponse, UserProfile, DeleteResponse, UserAuthen
+from models.users import LogUserProfile, UpdateUser, UserCreate, LogUserLogin, UpdateUserResponse, UserProfile, DeleteResponse, UserAuthen
 from deps import get_session, get_current_user
 
 router = APIRouter(tags=["Authentication"])
@@ -43,6 +43,9 @@ async def register_user(user: UserCreate, session: Session = Depends(get_session
 
     return db_user
 
+
+
+
 @router.post("/login", response_model=Token)
 async def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
@@ -55,24 +58,18 @@ async def login(
     
     access_token = auth_handler.create_access_token(data={"username": user.email, "role": user.role})
     
-    existing_login = session.query(LogUserProfile).filter(LogUserProfile.user_id == user.user_id).first()
-    
-    if existing_login:
-        existing_login.action_datetime = datetime.now().replace(microsecond=0)
-        existing_login.action_name = "login"
-        existing_login.password = access_token  # For consistency, using access_token as placeholder
-    else:
-        log_user_login = LogUserProfile(
-            action_name="login",
-            action_datetime=datetime.now().replace(microsecond=0),
-            user_id=user.user_id,
-            username=user.username,
-            email=user.email,
-            password=access_token,  # For consistency, using access_token as placeholder
-            role=user.role
-        )
-        session.add(log_user_login)
 
+    log_user_login = LogUserLogin(
+        action_name="login",
+        action_datetime=datetime.now().replace(microsecond=0),
+        user_id=user.user_id,
+        username=user.username,
+        email=user.email,
+        password=access_token, 
+        role=user.role
+    )
+    
+    session.add(log_user_login) 
     session.commit()
 
     return {
@@ -82,6 +79,41 @@ async def login(
         "username": user.username,
         "role": user.role
     }
+
+
+@router.post("/logout")
+async def logout(
+    form_data: OAuth2PasswordRequestForm = Depends(),
+    session: Session = Depends(get_session)
+):
+    user = session.query(UserProfile).filter(UserProfile.email == form_data.username).first()
+    
+    if not user or not auth_handler.verify_password(form_data.password, user.password):
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    
+
+    log_user_logout = LogUserLogin(
+        action_name="logout",
+        action_datetime=datetime.now().replace(microsecond=0),
+        user_id=user.user_id,
+        username=user.username,
+        email=user.email,
+        password=None,  
+        role=user.role
+    )
+    
+    session.add(log_user_logout)  
+    session.commit()
+
+    return {
+        "message": "Successfully logged out",
+        "user_id": user.user_id,
+        "username": user.username
+    }
+
+
+
+
 
 @router.get("/", response_model=UserAuthen)
 async def get_user(

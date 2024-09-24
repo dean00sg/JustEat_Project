@@ -38,6 +38,22 @@ class LogUserProfile(Base):
     role = Column(String, default="user")
    
 
+class LogUserLogin(Base):
+    __tablename__ = 'log_Userlogin'
+
+    id = Column(Integer, primary_key=True, index=True)
+    action_name = Column(String)
+    action_datetime = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
+    user_id = Column(Integer)
+    username = Column(String)
+    email = Column(String)
+    password = Column(String)
+    role = Column(String)
+
+
+
+
+
 class UserCreate(BaseModel):
     username: str
     email: EmailStr
