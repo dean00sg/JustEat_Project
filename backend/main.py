@@ -25,7 +25,7 @@ init_router(app)
 
 @app.get("/")
 def root():
-    return {"message": "Welcome to the Pet Care App"}
+    return {"message": "Welcome to justEat App"}
 
 
 def get_db():
