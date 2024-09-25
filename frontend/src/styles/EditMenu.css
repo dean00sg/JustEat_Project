@@ -56,14 +56,6 @@
   color: #333; /* Dark gray text */
 }
 
-.admin-form-input[type="file"] {
-  padding: 0.5rem;
-}
-
-.admin-form-input[type="number"] {
-  -moz-appearance: textfield;
-}
-
 .admin-button {
   display: flex;
   align-items: center;
@@ -86,32 +78,6 @@
   background-color: #000; /* Black on hover */
 }
 
-.admin-add-category-button {
-  background-color: #444; /* Slightly lighter dark gray for add category */
-}
-
-.admin-add-category-button:hover {
-  background-color: #222; /* Even darker gray on hover */
-}
-
-.admin-remove-category-button {
-  background-color: #e74c3c; /* Red background for remove button */
-  color: #fff; /* White text */
-  width: 80px; /* Set a fixed width for the remove button */
-}
-
-.admin-remove-category-button:hover {
-  background-color: #c0392b; /* Darker red on hover */
-}
-
-.admin-add-option-button {
-  background-color: #555; /* Darker gray for add option */
-}
-
-.admin-add-option-button:hover {
-  background-color: #333; /* Darker gray on hover */
-}
-
 .admin-remove-option-button {
   background-color: #e74c3c; /* Red background for remove option */
   color: #fff; /* White text */
@@ -122,49 +88,25 @@
   background-color: #c0392b; /* Darker red on hover */
 }
 
-.admin-submit-button {
-  background-color: #444; /* Dark gray for submit button */
-  margin-top: 1rem;
-}
-
-.admin-submit-button:hover {
-  background-color: #222; /* Darker gray on hover */
-}
-
-.admin-category-container,
 .admin-option-container {
   display: flex;
   flex-direction: column;
 }
 
-.admin-category-list,
-.admin-option-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.admin-category-item,
 .admin-option-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
-  border-bottom: 1px solid #ddd; /* Light gray border */
+  margin-bottom: 1rem;
 }
 
-.admin-category-item:last-child,
-.admin-option-item:last-child {
-  border-bottom: none;
+.admin-option-item input {
+  flex: 1;
+  margin-right: 10px;
 }
 
-.admin-option-item {
-  font-size: 0.875rem;
-}
-
-.admin-form-input {
-  margin-bottom: 0.5rem;
-  width: calc(100% - 2rem);
+.admin-option-item input[type="number"] {
+  width: 100px; /* Fixed width for price input */
 }
 
 /* Switch Styles */
@@ -212,3 +154,22 @@ input:checked + .slider {
 input:checked + .slider:before {
   transform: translateX(26px);
 }
+
+.image-preview {
+    margin-top: 10px;
+    max-width: 50%; /* Responsive */
+    height: auto; /* Maintain aspect ratio */
+    border-radius: 4px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow for effect */
+  }
+
+  .admin-add-option-button {
+    background-color: #3498db; /* Blue background */
+    color: #fff; /* White text */
+    margin-top: 10px; /* Margin above the button */
+  }
+  
+  .admin-add-option-button:hover {
+    background-color: #2980b9; /* Darker blue on hover */
+  }
+  

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import foodItems from "../assets/data";
-import "../styles/Home.css";
-import Navbar from "../components/Navbar/Navbar";
+import "../styles/HomeAdmin.css";
+import NavbarAdmin from "../components/Navbar/NavbarAdmin";
+import { FaEdit } from "react-icons/fa"; // Importing edit icon from react-icons
 
-const Home = () => {
+const HomeAdmin = () => {
   const [search, setSearch] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
 
@@ -34,7 +35,7 @@ const Home = () => {
 
   return (
     <div className="home">
-      <Navbar search={search} handleSearch={handleSearch} />
+        <NavbarAdmin search={search} handleSearch={handleSearch}/>
 
       {/* Categories */}
       <div className="categories">
@@ -53,29 +54,21 @@ const Home = () => {
 
       {/* Food List */}
       <div className="food-list">
-  {filteredItems.map((item) => (
-    item.available ? (
-      <Link key={item.id} to={`/item/${item.id}`} className="food-item">
-        <img src={item.image} alt={item.name} className="food-image" />
-        <div className="food-details">
-          <h2>{item.name}</h2>
-          <p>${item.price.toFixed(2)}</p>
-        </div>
-      </Link>
-    ) : (
-      <div key={item.id} className="food-item unavailable">
-        <img src={item.image} alt={item.name} className="food-image" />
-        <div className="food-details">
-          <h2>{item.name}</h2>
-          <p>${item.price.toFixed(2)}</p>
-        </div>
-        <h1 className="unavailable-banner">Out of Stock</h1>
+        {filteredItems.map((item) => (
+          <Link key={item.id} to={`/admin/edit/${item.id}`} className="food-item">
+            <img src={item.image} alt={item.name} className="food-image" />
+            <div className="food-details">
+              <h2>{item.name}</h2>
+              <p>${item.price.toFixed(2)}</p>
+              <Link to={`/admin/edit/${item.id}`} className="edit-button">
+                <FaEdit /> {/* Using the edit icon */}
+              </Link>
+            </div>
+          </Link>
+        ))}
       </div>
-    )
-  ))}
-</div>
     </div>
   );
 };
 
-export default Home;
+export default HomeAdmin;

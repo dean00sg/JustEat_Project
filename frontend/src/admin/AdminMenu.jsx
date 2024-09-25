@@ -1,20 +1,23 @@
 import React, { useState } from 'react';
 import '../styles/AdminMenu.css';
-import Navbar from '../components/Navbar/Navbar';
-import { useAuth } from '../contexts/Authcontext'; // Corrected import path
+import { useAuth } from '../contexts/Authcontext';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import Swal from 'sweetalert2';
+import NavbarAdmin from '../components/Navbar/NavbarAdmin';
 
 const AdminMenu = () => {
   const { isAuthenticated } = useAuth();
-  
-  if (!isAuthenticated) {
+  const navigate = useNavigate(); // Create navigate instance
+
+  // Check authentication status
+  if (isAuthenticated) {
     Swal.fire({
       title: 'Unauthorized',
       text: 'You need to be logged in to access this page.',
       icon: 'error',
       confirmButtonText: 'Ok'
     }).then(() => {
-      window.location.href = '/login'; // Redirect to login page
+      window.location.href = '/login'; 
     });
     return null;
   }
@@ -22,8 +25,8 @@ const AdminMenu = () => {
   const [menuName, setMenuName] = useState('');
   const [menuImage, setMenuImage] = useState(null);
   const [price, setPrice] = useState('');
-  const [stock, setStock] = useState('');
-  const [categories, setCategories] = useState(['Category 1', 'Category 2']); // Sample categories
+  const [available, setAvailable] = useState(false);
+  const [categories, setCategories] = useState(['Category 1', 'Category 2']);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [newCategory, setNewCategory] = useState('');
   const [options, setOptions] = useState([]);
@@ -57,19 +60,47 @@ const AdminMenu = () => {
     event.preventDefault();
     const formData = {
       menuName,
-      menuImage: menuImage ? menuImage.name : null, // Log file name instead of file object
+      menuImage: menuImage ? menuImage.name : null,
       price,
-      stock,
+      available,
       category: selectedCategory,
-      categories,
       options,
     };
+
+    // Save menu data to local storage
+    const existingItems = JSON.parse(localStorage.getItem("menuItems")) || [];
+    localStorage.setItem("menuItems", JSON.stringify([...existingItems, formData]));
+
+    // Save categories to local storage
+    const existingCategories = JSON.parse(localStorage.getItem("categories")) || [];
+    if (!existingCategories.includes(selectedCategory)) {
+      existingCategories.push(selectedCategory);
+      localStorage.setItem("categories", JSON.stringify(existingCategories));
+    }
+
+    // Show success message
+    Swal.fire({
+      title: 'Menu Created',
+      text: 'Your menu has been created successfully!',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then(() => {
+      navigate('/homeadmin'); // Navigate to HomeAdmin
+    });
+
     console.log('Submitted Form Data:', formData);
+    // Reset form
+    setMenuName('');
+    setMenuImage(null);
+    setPrice('');
+    setAvailable(false);
+    setSelectedCategory('');
+    setOptions([]);
   };
 
   return (
     <div className="admin-menu-page">
-      <Navbar />
+      <NavbarAdmin />
       <div className="admin-menu-form-container">
         <h1 className="admin-menu-form-title">Create Menu</h1>
         <form className="admin-menu-form" onSubmit={handleSubmit}>
@@ -110,16 +141,15 @@ const AdminMenu = () => {
           </div>
 
           <div className="admin-menu-form-group">
-            <label htmlFor="admin-stock">Stock</label>
-            <input
-              type="number"
-              id="admin-stock"
-              className="admin-form-input"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              min="0"
-              required
-            />
+            <label htmlFor="admin-available">Available</label>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={available}
+                onChange={() => setAvailable(!available)}
+              />
+              <span className="slider"></span>
+            </label>
           </div>
 
           <div className="admin-menu-form-group">

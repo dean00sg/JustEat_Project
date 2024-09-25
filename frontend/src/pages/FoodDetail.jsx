@@ -35,7 +35,7 @@ function FoodDetail() {
 
   const handleQuantityChange = (e) => {
     const value = parseInt(e.target.value);
-    setQuantity(value >= 1 && value <= item.stock ? value : 1);
+    setQuantity(value >= 1 ? value : 1);
   };
 
   const handleAddToCart = () => {
@@ -69,52 +69,59 @@ function FoodDetail() {
           <h1>{item.name}</h1>
           <p>{item.description}</p>
           <p><strong>Price:</strong> ${item.price.toFixed(2)}</p>
-          <p><strong>Stock:</strong> {item.stock}</p>
+          <p><strong>Available:</strong> {item.available ? "Yes" : <span style={{ color: 'red' }}>Out of Stock</span>}</p>
 
-          <div className="quantity-selector">
-            <label htmlFor="quantity">Quantity:</label>
-            <input
-              type="number"
-              id="quantity"
-              name="quantity"
-              min="1"
-              max={item.stock}
-              value={quantity}
-              onChange={handleQuantityChange}
-            />
-          </div>
-
-          <div className="options-selector">
-            <label>Options:</label>
-            {item.options.map((option) => (
-              <div
-                key={option.id}
-                className={`option-item ${selectedOptions.includes(option) ? 'selected' : ''}`}
-                onClick={() => handleOptionClick(option)}
-              >
-                {option.name} + ${option.price.toFixed(2)}
+          {item.available ? (
+            <>
+              <div className="quantity-selector">
+                <label htmlFor="quantity">Quantity:</label>
+                <input
+                  type="number"
+                  id="quantity"
+                  name="quantity"
+                  min="1"
+                  value={quantity}
+                  onChange={handleQuantityChange}
+                />
               </div>
-            ))}
-          </div>
 
-          <div className="note-section">
-            <label htmlFor="note">Special Instructions:</label>
-            <textarea
-              id="note"
-              name="note"
-              placeholder="Write your note here..."
-              value={note} // Bind the note state to the textarea
-              onChange={(e) => setNote(e.target.value)} // Update the note state when input changes
-            />
-          </div>
+              <div className="options-selector">
+                <label>Options:</label>
+                {item.options.map((option) => (
+                  <div
+                    key={option.id}
+                    className={`option-item ${selectedOptions.includes(option) ? 'selected' : ''}`}
+                    onClick={() => handleOptionClick(option)}
+                  >
+                    {option.name} + ${option.price.toFixed(2)}
+                  </div>
+                ))}
+              </div>
 
-          <div className="total-price">
-            <h3>Total Price: ${calculateTotalPrice().toFixed(2)}</h3>
-          </div>
+              <div className="note-section">
+                <label htmlFor="note">Special Instructions:</label>
+                <textarea
+                  id="note"
+                  name="note"
+                  placeholder="Write your note here..."
+                  value={note} // Bind the note state to the textarea
+                  onChange={(e) => setNote(e.target.value)} // Update the note state when input changes
+                />
+              </div>
 
-          <button className="add-to-cart-button" onClick={handleAddToCart}>
-            Add to Cart
-          </button>
+              <div className="total-price">
+                <h3>Total Price: ${calculateTotalPrice().toFixed(2)}</h3>
+              </div>
+
+              <button className="add-to-cart-button" onClick={handleAddToCart}>
+                Add to Cart
+              </button>
+            </>
+          ) : (
+            <button className="add-to-cart-button" disabled>
+              Out of Stock
+            </button>
+          )}
         </div>
       </div>
     </div>

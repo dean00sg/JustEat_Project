@@ -125,7 +125,7 @@
   align-items: center;
 }
 
-.checkout-button {
+.order-now-button {
   background-color: #333;
   color: #fff;
   border: none;
@@ -136,6 +136,7 @@
   transition: background-color 0.3s;
 }
 
-.checkout-button:hover {
+.order-now-button:hover {
   background-color: #555;
 }
+

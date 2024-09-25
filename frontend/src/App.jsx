@@ -11,6 +11,10 @@ import Checkout from './pages/Checkout';
 import AdminMenu from './admin/AdminMenu';
 import { AuthProvider } from './contexts/Authcontext';
 import PrivateRoute from './admin/PrivateRoute';
+import HomeAdmin from './admin/Homeadmin';
+import EditMenu from './admin/EditMenu';
+import Orders from './admin/Orders';
+import Promotion from './admin/Promotion';
 
 function App() {
   return (
@@ -25,17 +29,26 @@ function App() {
             <Route path="/cart" element={<Cart />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/history" element={<History />} />
+            <Route path="/homeadmin" element={<HomeAdmin />} />
+            <Route path="/create" element={<AdminMenu />} />
+            <Route path="/admin/edit/:id" element={<EditMenu />} />
+            <Route path="/orders" element={<Orders />} />
+            <Route path="/create-promotion" element={<Promotion />} />
+            
+
+
+
 
             {/* Auth Routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
 
             {/* Private Routes */}
-            <Route path="/admin-menu" element={
+            {/* <Route path="/admin-menu" element={
               <PrivateRoute>
                 <AdminMenu />
               </PrivateRoute>
-            } />
+            } /> */}
           </Routes>
         </div>
       </AuthProvider>

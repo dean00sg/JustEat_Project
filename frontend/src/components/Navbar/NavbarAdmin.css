@@ -1,0 +1,136 @@
+/* Navbar Admin Styling */
+.navbar-admin {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+    border-bottom: 1px solid #444;
+}
+  
+.navbar-admin-container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Left: Logo */
+.navbar-admin-logo {
+    text-decoration: none;
+    color: #fff;
+    font-size: 26px;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+  
+.navbar-admin-logo:hover {
+    color: #ddd;
+}
+  
+/* Right: Icons and Search Bar */
+.navbar-admin-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Increased gap for better spacing */
+}
+
+/* Search Bar */
+.navbar-admin-search-container {
+    display: flex;
+    align-items: center;
+    background-color: #222; /* Slightly lighter background */
+    border-radius: 25px;
+    overflow: hidden; /* To round corners */
+}
+
+.navbar-admin-search-input {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 25px 0 0 25px; /* Rounded left corners */
+    background-color: transparent; /* Transparent background */
+    color: #fff;
+    transition: background 0.3s, border-color 0.3s;
+    width: 200px; /* Set a width for consistency */
+}
+  
+.navbar-admin-search-input:focus {
+    background-color: #444; /* Darker on focus */
+    outline: none;
+}
+  
+.navbar-admin-search-button {
+    background: #444; /* Button background */
+    border: none;
+    border-radius: 0 25px 25px 0; /* Rounded right corners */
+    cursor: pointer;
+    color: #fff;
+    padding: 10px 15px; /* Padding for button */
+    transition: background 0.3s;
+}
+
+.navbar-admin-search-button:hover {
+    background: #555; /* Lighter on hover */
+}
+
+/* Menu Button */
+.navbar-admin-menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    font-size: 30px;
+    transition: color 0.3s;
+}
+  
+.navbar-admin-menu-button:hover {
+    color: #919191;
+}
+
+/* Dropdown Menu */
+.navbar-admin-dropdown-menu {
+    position: absolute;
+    top: calc(100% - 10px);
+    right: 10px;
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Menu Item */
+.navbar-admin-menu-item {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    color: #fff;
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+  
+.navbar-admin-menu-item:hover {
+    background-color: #333;
+    color: #ccc;
+}
+  
+.navbar-admin-menu-item svg {
+    margin-right: 12px;
+    font-size: 18px;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .navbar-admin {
+        flex-direction: column;
+    }
+}
