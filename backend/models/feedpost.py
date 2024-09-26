@@ -6,7 +6,7 @@ from datetime import datetime
 from deps import Base
 
 class FeedPost(Base):
-    __tablename__ = 'feedpost'
+    __tablename__ = 'Feedpost'
 
     NT_id = Column(Integer, primary_key=True, index=True)
     header = Column(String, nullable=False)
