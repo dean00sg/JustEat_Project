@@ -13,13 +13,15 @@ class Menu(Base):
     __tablename__ = "Menu"
 
     menu_id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, index=True)
-    image = Column(String, nullable=True)
-    option_name = Column(String, nullable=True)
-    category_name = Column(String, nullable=True)
-    price = Column(String, nullable=True)
+    name = Column(String, index=False)
+    image = Column(String, nullable=False)
+    
+    category_id = Column(Integer, ForeignKey('Category.category_id'), nullable=False)
+    category_name = Column(String, nullable=False)
+    price = Column(String, nullable=False)
+    status_menu = Column(String, default="available")
     remark = Column(String, nullable=True)  
-    create_by = Column(String, index=True) 
+    create_by = Column(String, index=False)
 
 
 
@@ -41,9 +43,7 @@ class LogMenu(Base):
     to_price = Column(String, nullable=True)
     category_name =Column(String, nullable=False)
     to_category_name =Column(String, nullable=True)
-    option_name =Column(String, nullable=False)
-    to_option_name =Column(String, nullable=True)
-
+  
     # status = Column(String, nullable=False)
     create_by = Column(String, nullable=False)
 
@@ -52,8 +52,7 @@ class LogMenu(Base):
 class MenuCreate(BaseModel):
     name: str
     image: str
-    option_name: str
-    category_name: str
+    category_id: int
     price: str
     remark: str
 
@@ -61,9 +60,9 @@ class MenuCreate(BaseModel):
 class MenuUpdate(BaseModel):
     name: Optional[str] = None
     image: Optional[str] = None
-    option_name: Optional[str] = None
-    category_name: Optional[str] = None
+    category_id: Optional[str] = None
     price: Optional[str] = None
+    status_menu: Optional[str] = None
     remark: Optional[str] = None
 
 
@@ -71,10 +70,10 @@ class MenuResponse(BaseModel):
     menu_id: int
     name: str
     image: str
-    option_name: str
     category_name: str
     price: str
-    remark: str  # Ensure remark is included as required
+    remark: str 
+    status_menu:str
     create_by: str
 
     class Config:
