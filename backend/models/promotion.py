@@ -12,6 +12,7 @@ class Promotion(Base):
     promotion_id = Column(Integer, primary_key=True, index=True)
     datetime_rec = Column(DateTime, nullable=False, default=lambda: datetime.now().replace(microsecond=0))
     header = Column(String, nullable=False)
+    name_menu= Column(String, nullable=False)
     startdatetime = Column(DateTime, nullable=False, default=lambda: datetime.now().replace(microsecond=0))
     enddatetime = Column(DateTime, nullable=False)
     image = Column(String, nullable=False)
@@ -31,6 +32,7 @@ class LogPromotion(Base):
 
     datetime_rec = Column(DateTime, nullable=False)
     header = Column(String, nullable=False)
+    name_menu= Column(String, nullable=False)
     to_header = Column(String, nullable=True)
     startdatetime = Column(DateTime, nullable=False)
     enddatetime = Column(DateTime, nullable=False)
@@ -46,6 +48,7 @@ class LogPromotion(Base):
 
 class MenuCreate(BaseModel):
     header: str
+    name_menu:str
     image: str
     description: str
     enddatetime:datetime
@@ -54,6 +57,7 @@ class MenuCreate(BaseModel):
 
 class MenuUpdate(BaseModel):
     header: Optional[str] = None
+    name_menu: Optional[str] = None
     image: Optional[str] = None
     enddatetime: Optional[datetime] = None
     description: Optional[str] = None
@@ -63,6 +67,7 @@ class MenuUpdate(BaseModel):
 class MenuResponse(BaseModel):
     promotion_id: int
     header: str
+    name_menu:str
     image: str
     description: str
     startdatetime: datetime

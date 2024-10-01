@@ -12,8 +12,8 @@ class FeedPost(Base):
     header = Column(String, nullable=False)
     start_datetime = Column(DateTime, nullable=False)
     end_datetime = Column(DateTime, nullable=False)
-    image_url = Column(String, nullable=True)
-    description = Column(JSON, nullable=True)
+    image_url = Column(String, nullable=False)
+    description = Column(JSON, nullable=False)
     record_date = Column(DateTime, default=lambda: datetime.now().replace(microsecond=0))
 
 class LogFeedPost(Base):

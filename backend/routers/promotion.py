@@ -18,6 +18,7 @@ if not os.path.exists(IMAGE_UPLOAD_DIRECTORY):
 @router.post("/", response_model=MenuResponse)
 async def create_promotion(
     header: str,
+    name_menu:str,
     description: str,
     enddatetime: str,
     image: UploadFile = File(...),
@@ -38,6 +39,7 @@ async def create_promotion(
 
     new_promotion = Promotion(
         header=header,
+        name_menu=name_menu,
         image=image_path,
         description=description,
         startdatetime=datetime.now().replace(microsecond=0),
@@ -55,6 +57,7 @@ async def create_promotion(
         action_datetime=datetime.now().replace(microsecond=0),
         promotion_id=new_promotion.promotion_id,
         header=new_promotion.header,
+        name_menu=new_promotion.name_menu,
         startdatetime=new_promotion.startdatetime,
         enddatetime=new_promotion.enddatetime,
         image=new_promotion.image,
@@ -81,6 +84,7 @@ async def get_promotions(db: Session = Depends(get_session)):
 async def update_promotion(
     promotion_id: int, 
     header: str = None, 
+    name_menu:str= None, 
     description: str = None, 
     enddatetime: str = None,
     image: UploadFile = File(None),  # Optional image upload
@@ -98,6 +102,7 @@ async def update_promotion(
         action_datetime=datetime.now().replace(microsecond=0),
         promotion_id=db_promotion.promotion_id,
         header=db_promotion.header,
+        name_menu=db_promotion.name_menu,
         startdatetime=db_promotion.startdatetime,
         enddatetime=db_promotion.enddatetime,
         image=db_promotion.image,
@@ -110,6 +115,10 @@ async def update_promotion(
     # Update fields if provided in request
     if header:
         db_promotion.header = header
+
+    if name_menu:
+        db_promotion.name_menu = name_menu
+
     if description:
         db_promotion.description = description
     if enddatetime:
@@ -157,6 +166,7 @@ async def delete_promotion(
         action_datetime=datetime.now().replace(microsecond=0),
         promotion_id=db_promotion.promotion_id,
         header=db_promotion.header,
+        name_menu=db_promotion.name_menu,
         startdatetime=db_promotion.startdatetime,
         enddatetime=db_promotion.enddatetime,
         image=db_promotion.image,
@@ -173,6 +183,7 @@ async def delete_promotion(
     response_data = MenuResponse(
         promotion_id=db_promotion.promotion_id,
         header=db_promotion.header,
+        name_menu=db_promotion.name_menu,
         image=db_promotion.image,
         description=db_promotion.description,
         startdatetime=db_promotion.startdatetime,
