@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import Optional
 from pydantic import BaseModel
-from sqlalchemy import Column, DateTime, Integer, String
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from deps import Base
 
 class Option(Base):
@@ -10,9 +10,11 @@ class Option(Base):
     Option_id = Column(Integer, primary_key=True, index=True)
     datetime_rec = Column(DateTime, nullable=False, default=lambda: datetime.now().replace(microsecond=0))
     option_name = Column(String, nullable=False)
+    category_id = Column(Integer, ForeignKey('Category.category_id'), nullable=False)
     category_name = Column(String, nullable=False)
     price = Column(String, nullable=False)
-    remark = Column(String, nullable=False)
+    remark = Column(String, nullable=True)
+    status_option = Column(String, default="available")  # Fixed typo: "avalable" to "available"
     created_by = Column(String, nullable=False)
 
 
@@ -39,16 +41,18 @@ class LogOption(Base):
 
 class OptionCreate(BaseModel):
     option_name: str
-    category_name: str
+    category_id: int
     price: str
-    remark: str
+    remark: Optional[str] = None 
+    status_option: Optional[str] = "available" 
 
 
 class OptionUpdate(BaseModel):
     option_name: Optional[str] = None
-    category_name: Optional[str] = None
+    category_id: Optional[int] = None
     price: Optional[str] = None
     remark: Optional[str] = None
+    status_option: Optional[str] = None
 
 
 class OptionResponse(BaseModel):
@@ -56,7 +60,8 @@ class OptionResponse(BaseModel):
     option_name: str
     category_name: str
     price: str
-    remark: str
+    remark: Optional[str] = None
+    status_option: str
 
     class Config:
         orm_mode = True
