@@ -6,6 +6,7 @@ from .option import router as option_router
 from .menu_create import router as menu_router
 from .promotion import router as promotion_router
 from .orders import router as order_router
+from .payment import router as payment_router
 
 def init_router(app: FastAPI):
     app.include_router(auth_router, prefix="/authentication")
@@ -15,4 +16,5 @@ def init_router(app: FastAPI):
     app.include_router(menu_router, prefix="/menu")
     app.include_router(promotion_router, prefix="/promotion")
     app.include_router(order_router, prefix="/Orders")
+    app.include_router(payment_router, prefix="/Payment")
   
