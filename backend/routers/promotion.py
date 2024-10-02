@@ -1,10 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.orm import Session
-from typing import List
-from models.promotion import Promotion, MenuResponse, LogPromotion
+from typing import List, Optional
+from models import menu_create
+from models.promotion import MenuCreate, Promotion, MenuResponse, LogPromotion
 from deps import get_session, get_current_user
 from datetime import datetime
-import os  # Import os module for directory operations
+import os
 
 # Define the directory for uploaded images
 IMAGE_UPLOAD_DIRECTORY = "./uploaded_imagesPromotion"
@@ -17,36 +18,37 @@ if not os.path.exists(IMAGE_UPLOAD_DIRECTORY):
 
 @router.post("/", response_model=MenuResponse)
 async def create_promotion(
-    header: str,
-    name_menu:str,
-    description: str,
-    enddatetime: str,
+    header: str = Form(...),  # Use Form for header
+    menu_id: int = Form(...),  # Use Form for menu_id
+    description: str = Form(...),  # Use Form for description
+    enddatetime: datetime = Form(...),  # Use Form for enddatetime
     image: UploadFile = File(...),
     db: Session = Depends(get_session),
     username: str = Depends(get_current_user)
 ):
-    # Parse the enddatetime string into a datetime object
-    try:
-        end_datetime_obj = datetime.fromisoformat(enddatetime)  # ISO format (YYYY-MM-DDTHH:MM:SS)
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DDTHH:MM:SS.")
+    # Fetch the menu name based on the provided menu_id
+    menu_item = db.query(menu_create.Menu).filter(menu_create.Menu.menu_id == menu_id).first()
+
+    if not menu_item:
+        raise HTTPException(status_code=404, detail="Menu item not found")
 
     # Save the uploaded image
-    image_path = os.path.join(IMAGE_UPLOAD_DIRECTORY, image.filename)  # Define your image storage path
+    image_path = os.path.join(IMAGE_UPLOAD_DIRECTORY, image.filename)
     with open(image_path, "wb") as image_file:
         content = await image.read()
         image_file.write(content)
 
     new_promotion = Promotion(
         header=header,
-        name_menu=name_menu,
+        menu_id=menu_id,
+        name_menu=menu_item.name,  # Get name_menu from the menu_item
         image=image_path,
         description=description,
         startdatetime=datetime.now().replace(microsecond=0),
-        enddatetime=end_datetime_obj,
+        enddatetime=enddatetime,
         create_by=username
     )
-    
+
     db.add(new_promotion)
     db.commit()
     db.refresh(new_promotion)
@@ -57,23 +59,22 @@ async def create_promotion(
         action_datetime=datetime.now().replace(microsecond=0),
         promotion_id=new_promotion.promotion_id,
         header=new_promotion.header,
-        name_menu=new_promotion.name_menu,
+        name_menu=new_promotion.name_menu,  # Use the name_menu from new promotion
         startdatetime=new_promotion.startdatetime,
         enddatetime=new_promotion.enddatetime,
         image=new_promotion.image,
         description=new_promotion.description,
-        create_by=new_promotion.create_by,
+        create_by=username,
         action_by=username,
         datetime_rec=new_promotion.datetime_rec
     )
-    
+
     db.add(log_entry)
     db.commit()
 
     return new_promotion
 
 
-# Get a list of all promotions
 @router.get("/", response_model=List[MenuResponse])
 async def get_promotions(db: Session = Depends(get_session)):
     promotions = db.query(Promotion).all()
@@ -83,11 +84,12 @@ async def get_promotions(db: Session = Depends(get_session)):
 @router.put("/{promotion_id}", response_model=MenuResponse)
 async def update_promotion(
     promotion_id: int, 
-    header: str = None, 
-    name_menu:str= None, 
-    description: str = None, 
-    enddatetime: str = None,
-    image: UploadFile = File(None),  # Optional image upload
+    header: Optional[str] = Form(None),  # Use Form for optional header
+    name_menu: Optional[str] = Form(None),  # Use Form for optional name_menu
+    menu_id: Optional[int] = Form(None),  # Use Form for optional menu_id
+    description: Optional[str] = Form(None),  # Use Form for optional description
+    enddatetime: Optional[datetime] = Form(None),  # Use Form for optional enddatetime
+    image: UploadFile = File(None), 
     db: Session = Depends(get_session), 
     username: str = Depends(get_current_user)
 ):
@@ -116,23 +118,16 @@ async def update_promotion(
     if header:
         db_promotion.header = header
 
-    if name_menu:
-        db_promotion.name_menu = name_menu
+    if menu_id is not None:  # Update only if provided
+        db_promotion.menu_id = menu_id
 
     if description:
         db_promotion.description = description
     if enddatetime:
-        try:
-            db_promotion.enddatetime = datetime.fromisoformat(enddatetime)
-        except ValueError:
-            raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DDTHH:MM:SS.")
+        db_promotion.enddatetime = enddatetime
     if image:
-        # Define your image storage path
-        image_directory = "./uploaded_imagesPromotion"
-        if not os.path.exists(image_directory):
-            os.makedirs(image_directory)
-
-        image_filename = os.path.join(image_directory, image.filename)  # Ensure to save in the correct directory
+        # Handle image upload as before
+        image_filename = os.path.join(IMAGE_UPLOAD_DIRECTORY, image.filename)
         with open(image_filename, "wb") as image_file:
             content = await image.read()
             image_file.write(content)
@@ -146,7 +141,6 @@ async def update_promotion(
     db.commit()
 
     return db_promotion
-
 
 
 @router.delete("/{promotion_id}", response_model=MenuResponse)
