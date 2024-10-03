@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status, Form
 from sqlalchemy.orm import Session
-from typing import Optional
+from typing import List, Optional
 from datetime import datetime
 from models.payment import Payment, PaymentCreate, PaymentUpdate, PaymentResponse
 from models.orders import OrdersFood  # นำเข้า OrdersFood เพื่อใช้ในโค้ด
@@ -46,6 +46,38 @@ async def create_payment(
         create_by=new_payment.create_by,
         checkpay_by=new_payment.checkpay_by
     )
+
+@router.get("/", response_model=List[PaymentResponse])
+async def get_all_payments(
+    db: Session = Depends(get_session)
+):
+    payments = db.query(Payment).all()
+    return payments
+
+# Get payment by ID (GET)
+@router.get("/{pay_id}", response_model=PaymentResponse)
+async def get_payment_by_id(
+    pay_id: int, 
+    db: Session = Depends(get_session)
+):
+    payment = db.query(Payment).filter(Payment.pay_id == pay_id).first()
+
+    if not payment:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Payment not found")
+    
+    return PaymentResponse(
+        pay_id=payment.pay_id,
+        orders_id=payment.orders_id,
+        total_price=payment.total_price,
+        datetime_rec=payment.datetime_rec,
+        status_payment=payment.status_payment,
+        datetime_pay=payment.datetime_pay,
+        create_by=payment.create_by,
+        checkpay_by=payment.checkpay_by
+    )
+
+
+
 
 # Update payment by ID (PUT)
 @router.put("/{pay_id}", response_model=PaymentResponse)
