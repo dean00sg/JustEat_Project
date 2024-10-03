@@ -41,7 +41,7 @@ const NavbarAdmin = ({ search, handleSearch }) => {
               <div className="navbar-admin-dropdown-menu">
                 <Link to="/create" className="navbar-admin-menu-item">
                   <FiPlusCircle size={18} />
-                  <span>Create Menu</span>
+                  <span>Create Food</span>
                 </Link>
                 <Link to="/create-promotion" className="navbar-admin-menu-item">
                   <FiTag size={18} />

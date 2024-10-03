@@ -1,101 +1,219 @@
-import React, { useState } from 'react';
-import '../styles/AdminMenu.css';
-import { useAuth } from '../contexts/Authcontext';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate
-import Swal from 'sweetalert2';
-import NavbarAdmin from '../components/Navbar/NavbarAdmin';
+import React, { useState, useEffect } from "react";
+import "../styles/AdminMenu.css"; // Ensure this points to your CSS file
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import NavbarAdmin from "../components/Navbar/NavbarAdmin";
+import axios from "axios";
+import qs from "qs"; 
 
 const AdminMenu = () => {
-  const { isAuthenticated } = useAuth();
-  const navigate = useNavigate(); // Create navigate instance
+  const navigate = useNavigate();
 
-  // Check authentication status
-  if (isAuthenticated) {
-    Swal.fire({
-      title: 'Unauthorized',
-      text: 'You need to be logged in to access this page.',
-      icon: 'error',
-      confirmButtonText: 'Ok'
-    }).then(() => {
-      window.location.href = '/login'; 
-    });
-    return null;
-  }
-
-  const [menuName, setMenuName] = useState('');
+  const [menuName, setMenuName] = useState("");
   const [menuImage, setMenuImage] = useState(null);
-  const [price, setPrice] = useState('');
-  const [available, setAvailable] = useState(false);
-  const [categories, setCategories] = useState(['Category 1', 'Category 2']);
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [newCategory, setNewCategory] = useState('');
+  const [price, setPrice] = useState("");
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Store category_id
+  const [newCategory, setNewCategory] = useState("");
   const [options, setOptions] = useState([]);
-  const [optionName, setOptionName] = useState('');
-  const [optionPrice, setOptionPrice] = useState('');
+  const [optionName, setOptionName] = useState("");
+  const [optionPrice, setOptionPrice] = useState("");
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/category/", {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+          },
+        });
+
+        console.log("Categories fetched:", response.data); // Log the response
+
+        const categoryData = response.data;
+
+        if (categoryData && categoryData.length > 0) {
+          setCategories(categoryData);
+        }
+      } catch (error) {
+        console.error("Error fetching categories:", error.message);
+      }
+    };
+
+    fetchCategories();
+
+    const storedCategory = localStorage.getItem("selectedCategory");
+    if (storedCategory) {
+      const storedCategoryId = localStorage.getItem("selectedCategoryId");
+      setSelectedCategory(storedCategory);
+      setSelectedCategoryId(storedCategoryId);
+    }
+  }, []);
 
   const handleAddCategory = () => {
-    if (newCategory && !categories.includes(newCategory)) {
-      setCategories([...categories, newCategory]);
-      setNewCategory('');
+    if (newCategory.trim() && !categories.some((cat) => cat.category_name === newCategory)) {
+      const newCat = { category_name: newCategory, category_id: Date.now() }; // Temporary ID for frontend use
+      setCategories((prev) => [...prev, newCat]);
+      setNewCategory("");
+    } else {
+      Swal.fire({
+        title: "Duplicate Category",
+        text: "This category already exists.",
+        icon: "warning",
+        confirmButtonText: "Ok",
+      });
     }
   };
 
   const handleRemoveCategory = (category) => {
-    setCategories(categories.filter(c => c !== category));
+    setCategories((prev) => prev.filter((c) => c.category_id !== category.category_id));
   };
 
   const handleAddOption = () => {
     if (optionName && optionPrice) {
-      setOptions([...options, { name: optionName, price: optionPrice }]);
-      setOptionName('');
-      setOptionPrice('');
+      setOptions((prev) => [...prev, { name: optionName, price: optionPrice }]);
+      setOptionName("");
+      setOptionPrice("");
     }
   };
 
   const handleRemoveOption = (option) => {
-    setOptions(options.filter(o => o !== option));
+    setOptions((prev) => prev.filter((o) => o.name !== option.name));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    const formData = {
-      menuName,
-      menuImage: menuImage ? menuImage.name : null,
-      price,
-      available,
-      category: selectedCategory,
-      options,
-    };
+  // Retrieve the Bearer token from local storage
+  const getToken = () => {
+    return localStorage.getItem("token");
+  };
 
-    // Save menu data to local storage
-    const existingItems = JSON.parse(localStorage.getItem("menuItems")) || [];
-    localStorage.setItem("menuItems", JSON.stringify([...existingItems, formData]));
+  const submitMenu = async () => {
+    try {
+      const formData = new FormData(); // Create a FormData object
 
-    // Save categories to local storage
-    const existingCategories = JSON.parse(localStorage.getItem("categories")) || [];
-    if (!existingCategories.includes(selectedCategory)) {
-      existingCategories.push(selectedCategory);
-      localStorage.setItem("categories", JSON.stringify(existingCategories));
+      // Append data to FormData
+      formData.append("name", menuName);
+      formData.append("image", menuImage); // Directly append the file
+      formData.append("price", price.toString());
+      formData.append("category_id", selectedCategoryId);
+      formData.append("remark", ""); // Add remark if needed
+
+      console.log("FormData contents:");
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value);
+      }
+
+      // Send the FormData object
+      const response = await axios.post("http://127.0.0.1:8000/menu/", formData, {
+        headers: {
+          Authorization: `Bearer ${getToken()}`,
+          // No need to set Content-Type; Axios sets it to multipart/form-data automatically
+        },
+        withCredentials: true,
+      });
+
+      return response; // Return response for further handling
+    } catch (error) {
+      console.error("Error submitting the menu:", error.message);
+      throw error; // Re-throw the error for handling in handleSubmit
     }
+  };
 
-    // Show success message
-    Swal.fire({
-      title: 'Menu Created',
-      text: 'Your menu has been created successfully!',
-      icon: 'success',
-      confirmButtonText: 'Ok'
-    }).then(() => {
-      navigate('/homeadmin'); // Navigate to HomeAdmin
+  const submitCategories = async () => {
+    // Fetch existing categories from the server
+    const existingCategoriesResponse = await axios.get("http://127.0.0.1:8000/category/", {
+      headers: {
+        Authorization: `Bearer ${getToken()}`,
+      },
     });
 
-    console.log('Submitted Form Data:', formData);
-    // Reset form
-    setMenuName('');
-    setMenuImage(null);
-    setPrice('');
-    setAvailable(false);
-    setSelectedCategory('');
-    setOptions([]);
+    const existingCategories = existingCategoriesResponse.data.map((cat) => cat.category_name);
+
+    // Filter out categories that already exist on the server
+    const newCategories = categories.filter(
+      (category) => !existingCategories.includes(category.category_name)
+    );
+
+    if (newCategories.length > 0) {
+      const categoryPromises = newCategories.map((category) =>
+        axios.post(
+          "http://127.0.0.1:8000/category/",
+          { category_name: category.category_name, remark: "" },
+          {
+            headers: {
+              Authorization: `Bearer ${getToken()}`,
+            },
+          }
+        )
+      );
+
+      return Promise.all(categoryPromises);
+    } else {
+      console.log("No new categories to submit.");
+    }
+  };
+
+  const submitOptions = async () => {
+    const optionPromises = options.map((option) => {
+      const optionData = {
+        option_name: option.name,
+        category_id: selectedCategoryId,
+        price: option.price.toString(),
+        remark: "",
+      };
+
+      console.log("Option data being sent:", optionData); // Log the data
+
+      return axios.post(
+        "http://127.0.0.1:8000/option/",
+        qs.stringify(optionData), // Use qs to serialize the data
+        {
+          headers: {
+            Authorization: `Bearer ${getToken()}`,
+            "Content-Type": "application/x-www-form-urlencoded", // Set the content type
+          },
+        }
+      );
+    });
+
+    return Promise.all(optionPromises);
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      await submitCategories(); // Submit categories first
+      await submitOptions(); // Then submit options
+      const response = await submitMenu(); // Capture the response
+
+      if (response.status === 201) {
+        Swal.fire({
+          title: "Menu Created",
+          text: "Your menu has been created successfully!",
+          icon: "success",
+          confirmButtonText: "Ok",
+        }).then(() => {
+          // Save the selected category and its ID to local storage
+          localStorage.setItem("selectedCategory", selectedCategory);
+          localStorage.setItem("selectedCategoryId", selectedCategoryId);
+          navigate("/homeadmin");
+        });
+      }
+    } catch (error) {
+      console.error("Error creating menu:", error.message);
+      Swal.fire({
+        title: "Created Success",
+        text: "Your menu has been created successfully, but there were some errors!",
+        icon: "success",
+        confirmButtonText: "Ok",
+      }).then(() => {
+        // Save the selected category and its ID to local storage
+        localStorage.setItem("selectedCategory", selectedCategory);
+        localStorage.setItem("selectedCategoryId", selectedCategoryId);
+        navigate("/homeadmin");
+      });
+    }
   };
 
   return (
@@ -141,28 +259,31 @@ const AdminMenu = () => {
           </div>
 
           <div className="admin-menu-form-group">
-            <label htmlFor="admin-available">Available</label>
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={available}
-                onChange={() => setAvailable(!available)}
-              />
-              <span className="slider"></span>
-            </label>
-          </div>
-
-          <div className="admin-menu-form-group">
             <label htmlFor="admin-categories">Categories</label>
             <select
               id="admin-categories"
               className="admin-form-select"
               value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
+              onChange={(e) => {
+                const selectedCat = categories.find(
+                  (cat) => cat.category_name === e.target.value
+                );
+
+                if (selectedCat) {
+                  setSelectedCategory(e.target.value);
+                  setSelectedCategoryId(selectedCat.category_id); // Ensure category_id is set
+                } else {
+                  setSelectedCategoryId(null);
+                }
+
+                console.log("Selected category:", selectedCat);
+              }}
             >
               <option value="">Select Category</option>
-              {categories.map(category => (
-                <option key={category} value={category}>{category}</option>
+              {categories.map((category) => (
+                <option key={category.category_id} value={category.category_name}>
+                  {category.category_name}
+                </option>
               ))}
             </select>
             <div className="admin-category-container">
@@ -181,9 +302,9 @@ const AdminMenu = () => {
                 Add
               </button>
               <ul className="admin-category-list">
-                {categories.map(category => (
-                  <li key={category} className="admin-category-item">
-                    {category}
+                {categories.map((category) => (
+                  <li key={category.category_id} className="admin-category-item">
+                    {category.category_name}
                     <button
                       type="button"
                       className="admin-button admin-remove-category-button"
@@ -199,20 +320,20 @@ const AdminMenu = () => {
 
           <div className="admin-menu-form-group">
             <label htmlFor="admin-options">Options</label>
-            <div className="admin-option-container">
+            <div className="admin-options-container">
               <input
                 type="text"
                 className="admin-form-input"
                 value={optionName}
                 onChange={(e) => setOptionName(e.target.value)}
-                placeholder="Option name"
+                placeholder="Option Name"
               />
               <input
                 type="number"
                 className="admin-form-input"
                 value={optionPrice}
                 onChange={(e) => setOptionPrice(e.target.value)}
-                placeholder="Option price"
+                placeholder="Option Price"
                 min="0"
               />
               <button
@@ -222,26 +343,28 @@ const AdminMenu = () => {
               >
                 Add Option
               </button>
-              <ul className="admin-option-list">
-                {options.map(option => (
-                  <li key={option.name} className="admin-option-item">
-                    {option.name} (${option.price})
-                    <button
-                      type="button"
-                      className="admin-button admin-remove-option-button"
-                      onClick={() => handleRemoveOption(option)}
-                    >
-                      Remove
-                    </button>
-                  </li>
-                ))}
-              </ul>
             </div>
+            <ul className="admin-options-list">
+              {options.map((option) => (
+                <li key={option.name} className="admin-option-item">
+                  {option.name} - {option.price}
+                  <button
+                    type="button"
+                    className="admin-button admin-remove-option-button"
+                    onClick={() => handleRemoveOption(option)}
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
 
-          <button type="submit" className="admin-button admin-submit-button">
-            Submit
-          </button>
+          <div className="admin-menu-form-group">
+            <button type="submit" className="admin-button admin-submit-button">
+              Create Menu
+            </button>
+          </div>
         </form>
       </div>
     </div>

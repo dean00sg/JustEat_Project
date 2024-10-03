@@ -8,6 +8,8 @@ from security import AuthHandler,Token
 from models.users import UserProfile  
 from pydantic import BaseModel
 
+from fastapi.staticfiles import StaticFiles
+
 app = FastAPI()
 auth_handler = AuthHandler()
 
@@ -18,6 +20,8 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+app.mount("/uploaded_images", StaticFiles(directory="uploaded_images"), name="uploaded_images")
 
 
 init_db()

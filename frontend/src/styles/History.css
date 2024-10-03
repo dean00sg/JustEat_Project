@@ -56,23 +56,48 @@
   color: #888;
 }
 
+/* Status Styles */
 .history-order-status {
   padding: 5px 10px;
   border-radius: 5px;
   font-weight: bold;
-  color: #fff;
+  color: #ffffff;
+  text-transform: capitalize; /* Capitalize status text */
+  position: relative; /* To enable pseudo-element styling */
+  overflow: hidden; /* To hide the pseudo-element overflow */
 }
 
-.status-in-progress {
+.status-inprogress {
   background-color: #ffc107;
+  box-shadow: 0 0 10px rgba(255, 193, 7, 0.5);
 }
 
 .status-complete {
   background-color: #28a745;
+  box-shadow: 0 0 10px rgba(40, 167, 69, 0.5);
 }
 
 .status-cancel {
   background-color: #dc3545;
+  box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+/* Adding a subtle glow effect */
+.history-order-status::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.2); /* Light overlay for a glow effect */
+  transition: all 0.3s;
+  opacity: 0;
+}
+
+.history-order-status:hover::after {
+  opacity: 1; /* Show glow effect on hover */
 }
 
 .history-order-total {

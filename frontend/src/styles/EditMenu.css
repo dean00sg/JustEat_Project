@@ -84,29 +84,28 @@
   width: 80px; /* Set a fixed width for the remove button */
 }
 
-.admin-remove-option-button:hover {
-  background-color: #c0392b; /* Darker red on hover */
-}
-
-.admin-option-container {
+/* Ensure the options container is displayed as flexbox */
+.admin-options-container {
   display: flex;
-  flex-direction: column;
+  flex-direction: column; /* Stack the rows vertically */
 }
 
-.admin-option-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
+/* Style for each option row */
+.admin-option {
+  display: flex; /* Align items in a row */
+  align-items: center; /* Center align vertically */
+  margin-bottom: 10px; /* Space between options */
 }
 
-.admin-option-item input {
-  flex: 1;
-  margin-right: 10px;
+/* Style for the input fields */
+.admin-form-input {
+  flex: 1; /* Make the input fields take equal space */
+  margin-right: 10px; /* Space between input fields and button */
 }
 
-.admin-option-item input[type="number"] {
-  width: 100px; /* Fixed width for price input */
+/* Button style */
+.admin-remove-option-button {
+  margin-left: 5px; /* Space between input fields and button */
 }
 
 /* Switch Styles */
