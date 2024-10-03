@@ -53,3 +53,9 @@ class ResponseOrders(BaseModel):
     status_menu: str
     status_order: str
     status_working: str
+
+
+class Createupdate(BaseModel):
+    
+    remark: str
+    status_working: str

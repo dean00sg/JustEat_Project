@@ -4,7 +4,7 @@ from typing import List
 from models.category import Category
 from models.menu_create import Menu
 from models.option import Option
-from models.orders import CreateOrders, OrdersFood, ResponseOrders
+from models.orders import CreateOrders, Createupdate, OrdersFood, ResponseOrders
 from deps import get_session
 
 router = APIRouter(tags=["Orders"])
@@ -155,57 +155,22 @@ def delete_order(order_id: int, db: Session = Depends(get_session)):
 
 # Update Order by ID (PUT)
 @router.put("/orders/{order_id}", response_model=ResponseOrders)
-def update_order(order_id: int, updated_order: CreateOrders, db: Session = Depends(get_session)):
+def update_order(order_id: int, updated_order: Createupdate, db: Session = Depends(get_session)):
+    # Fetch the existing order from the database
     db_order = db.query(OrdersFood).filter(OrdersFood.orders_id == order_id).first()
+    
     if db_order is None:
         raise HTTPException(status_code=404, detail="Order not found")
 
-    # Update the order details
-    db_order.menu_id = updated_order.menu_id
-    db_order.Option_id = ','.join(map(str, updated_order.option_ids)) if updated_order.option_ids else None
-    db_order.qty = updated_order.qty
+    # Only update the remark and status_working fields
     db_order.remark = updated_order.remark
+    db_order.status_working = updated_order.status_working
 
-    # Fetch the menu details
-    menu = db.query(Menu).filter(Menu.menu_id == db_order.menu_id).first()
-    if not menu:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Menu not found")
-
-    # Initialize lists for options names and total price
-    option_names = []
-    total_price = menu.price * db_order.qty  # Start with the menu price multiplied by qty
-
-    # Check if option_ids are provided
-    if updated_order.option_ids:
-        for option_id in updated_order.option_ids:
-            option = db.query(Option).filter(Option.Option_id == option_id).first()
-            if not option:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"Option {option_id} not found")
-
-            # Add the option name to the list
-            option_names.append(option.option_name)
-
-            # Add the option price to the total price
-            total_price += option.price * updated_order.qty  # Add option price multiplied by qty
-
-    # Determine the status_order based on status_menu and options
-    status_order = "available" if menu.status_menu == "available" and all(
-        option.status_option == "available" for option in db.query(Option).filter(Option.Option_id.in_(updated_order.option_ids)).all()
-    ) else "unavailable"
-
-    db_order.name_menu = menu.name
-    db_order.category_id = updated_order.category_id
-    db_order.category_name = menu.category_name
-    db_order.image = menu.image
-    db_order.price = menu.price
-    db_order.total_price = total_price
-    db_order.status_option = 'available'
-    db_order.status_menu = menu.status_menu
-    db_order.status_order = status_order
-
+    # Commit the changes and refresh the order object
     db.commit()
     db.refresh(db_order)
 
+    # Return the updated order information
     return ResponseOrders(
         orders_id=db_order.orders_id,
         name_menu=db_order.name_menu,
