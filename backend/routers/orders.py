@@ -4,7 +4,7 @@ from typing import List
 from models.category import Category
 from models.menu_create import Menu
 from models.option import Option
-from models.orders import CreateOrders, Createupdate, OrdersFood, ResponseOrders
+from models.orders import CreateOrders, Createupdateremark, Createupdateworking, OrdersFood, ResponseOrders
 from deps import get_session
 
 router = APIRouter(tags=["Orders"])
@@ -154,8 +154,8 @@ def delete_order(order_id: int, db: Session = Depends(get_session)):
     )
 
 # Update Order by ID (PUT)
-@router.put("/orders/{order_id}", response_model=ResponseOrders)
-def update_order(order_id: int, updated_order: Createupdate, db: Session = Depends(get_session)):
+@router.put("/orders/remark/{order_id}", response_model=ResponseOrders)
+def update_order(order_id: int, updated_order: Createupdateremark, db: Session = Depends(get_session)):
     # Fetch the existing order from the database
     db_order = db.query(OrdersFood).filter(OrdersFood.orders_id == order_id).first()
     
@@ -164,6 +164,35 @@ def update_order(order_id: int, updated_order: Createupdate, db: Session = Depen
 
     # Only update the remark and status_working fields
     db_order.remark = updated_order.remark
+
+    # Commit the changes and refresh the order object
+    db.commit()
+    db.refresh(db_order)
+
+    # Return the updated order information
+    return ResponseOrders(
+        orders_id=db_order.orders_id,
+        name_menu=db_order.name_menu,
+        qty=db_order.qty,
+        image=db_order.image,
+        option_name=db_order.option_name_list,  # Use the property for option names
+        category_name=db_order.category_name,
+        price=db_order.price,
+        remark=db_order.remark,
+        total_price=db_order.total_price,  # Already a float
+        status_option=db_order.status_option,
+        status_menu=db_order.status_menu,
+        status_order=db_order.status_order,
+        status_working=db_order.status_working
+    )
+@router.put("/orders/working/{order_id}", response_model=ResponseOrders)
+def update_order(order_id: int, updated_order: Createupdateworking, db: Session = Depends(get_session)):
+    # Fetch the existing order from the database
+    db_order = db.query(OrdersFood).filter(OrdersFood.orders_id == order_id).first()
+    
+    if db_order is None:
+        raise HTTPException(status_code=404, detail="Order not found")
+
     db_order.status_working = updated_order.status_working
 
     # Commit the changes and refresh the order object

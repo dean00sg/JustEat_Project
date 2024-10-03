@@ -55,7 +55,10 @@ class ResponseOrders(BaseModel):
     status_working: str
 
 
-class Createupdate(BaseModel):
+class Createupdateremark(BaseModel):
     
     remark: str
+
+class Createupdateworking(BaseModel):
+
     status_working: str
