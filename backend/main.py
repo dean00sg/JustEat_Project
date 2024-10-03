@@ -22,7 +22,7 @@ app.add_middleware(
 )
 
 app.mount("/uploaded_images", StaticFiles(directory="uploaded_images"), name="uploaded_images")
-
+app.mount("/uploaded_imagesPromotion", StaticFiles(directory="uploaded_imagesPromotion"), name="uploaded_imagesPromotion")
 
 init_db()
 init_router(app)
