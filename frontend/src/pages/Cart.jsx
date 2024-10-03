@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import Swal from "sweetalert2";
 import "../styles/Cart.css";
 import { useCart } from "../contexts/Cartcontext";
@@ -11,37 +11,58 @@ const Cart = () => {
   const { addOrderToHistory } = useContext(OrderHistoryContext);
   const navigate = useNavigate();
 
+  // Log cartItems whenever it changes
+  useEffect(() => {
+    console.log("Cart Items:", cartItems);
+    console.log("Total Items in Cart:", cartItems.length);
+    const totalPrice = cartItems.reduce((acc, item) => acc + calculateItemTotalPrice(item), 0);
+    console.log("Total Price:", totalPrice.toFixed(2));
+  }, [cartItems]);
+
   const calculateItemTotalPrice = (item) => {
-    const basePrice = item.price;
-    const optionsPrice = item.options.reduce(
-      (acc, option) => acc + (option.price || 0),
-      0
-    );
-    return (basePrice + optionsPrice) * item.quantity;
+    // Only use the item's price multiplied by the quantity
+    return parseFloat(item.price); 
   };
 
-  const generateUniqueId = () => {
-    const randomNum = Math.floor(Math.random() * 1000000); // Generate a random number between 0 and 999999
-    return String(randomNum).padStart(6, '0'); // Ensure it's always 6 digits by padding with zeros
+  const handleProceedToHistory = async () => {
+    // Prepare the order data
+    const orderData = cartItems.map((item) => ({
+      menu_id: item.id, // Assuming item.id is the menu_id
+      qty: item.qty,
+      option_ids: item.options.map(option => option.Option_id),// Assuming each option has an id
+      category_id: item.category_id, // Assuming item has a category_id property
+      remark: item.remark || "", // Default to an empty string if no remark
+    }));
+
+    console.log("Order Data:", orderData);
+
+    try {
+      for (const order of orderData) {
+        const response = await fetch("http://127.0.0.1:8000/Orders/orders/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(order), // Send each order object individually
+        });
+  
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+      }
+
+      // If the response is successful, clear the cart and navigate
+      clearCart();
+      navigate("/history");
+
+      // Optionally, you can show a success message here
+      Swal.fire("Success!", "Your order has been placed.", "success");
+    } catch (error) {
+      console.error("There was a problem with the fetch operation:", error);
+      Swal.fire("Error!", "There was a problem placing your order.", "error");
+    }
   };
 
-  const handleProceedToHistory = () => {
-    const order = {
-      id: generateUniqueId(),
-      items: cartItems,
-      total: cartItems
-        .reduce((acc, item) => acc + calculateItemTotalPrice(item), 0)
-        .toFixed(2),
-      date: new Date().toLocaleString(),
-      status: "In Progress",
-    };
-
-    addOrderToHistory(order);
-    clearCart();
-    navigate("/history");
-  };
-
-  // Function to remove an item using Swal
   const handleRemoveItem = (itemId) => {
     Swal.fire({
       title: "Are you sure?",
@@ -73,14 +94,14 @@ const Cart = () => {
               return (
                 <div className="cart-item" key={item.id}>
                   <img
-                    src={item.image}
-                    alt={item.name}
+                    src={`http://127.0.0.1:8000/${item.image}`} // Assuming image URL is stored correctly
+                    alt={item.menu_name}
                     className="cart-item-image"
                   />
                   <div className="cart-item-content">
                     <div className="cart-item-header">
-                      <h2 className="cart-item-title">{item.name}</h2>
-                      <span className="cart-item-price">${itemTotalPrice}</span>
+                      <h2 className="cart-item-title">{item.menu_name}</h2>
+                      <span className="cart-item-price">${item.price}</span> {/* Use itemTotalPrice for display */}
                       <button
                         className="remove-button"
                         onClick={() => handleRemoveItem(item.id)}
@@ -90,20 +111,20 @@ const Cart = () => {
                     </div>
                     <div className="cart-item-details">
                       <span className="cart-item-quantity">
-                        Quantity: {item.quantity}
+                        Quantity: {item.qty}
                       </span>
                       <div className="cart-item-options">
                         <h4>Selected Options:</h4>
                         <ul>
                           {item.options.map((option, index) => (
                             <li key={index} className="option-item">
-                              {option.name} + ${option.price.toFixed(2)}
+                              {option.option_name} + ${parseFloat(option.price).toFixed(2)}
                             </li>
                           ))}
                         </ul>
-                        {item.note && (
+                        {item.remark && (
                           <p className="cart-item-note">
-                            <strong>Note:</strong> {item.note}
+                            <strong>Note:</strong> {item.remark}
                           </p>
                         )}
                       </div>

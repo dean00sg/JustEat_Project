@@ -7,7 +7,6 @@ import Register from './pages/Register';
 import Welcome from './pages/Welcome';
 import Cart from './pages/Cart';
 import History from './pages/History';
-import Checkout from './pages/Checkout';
 import AdminMenu from './admin/AdminMenu';
 import { AuthProvider } from './contexts/Authcontext';
 import PrivateRoute from './admin/PrivateRoute';
@@ -27,7 +26,6 @@ function App() {
             <Route path="/item/:id" element={<FoodDetail />} />
             <Route path="/menu" element={<Home />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
             <Route path="/history" element={<History />} />
             <Route path="/homeadmin" element={<HomeAdmin />} />
             <Route path="/create" element={<AdminMenu />} />

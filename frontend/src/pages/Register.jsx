@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import '../styles/Login_regis.css';
 
 function Register() {
@@ -11,8 +12,11 @@ function Register() {
 
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
+
+    // Reset error state
+    setError('');
 
     // Check if passwords match
     if (password !== confirmPassword) {
@@ -26,15 +30,32 @@ function Register() {
       return;
     }
 
-    // Save user data to localStorage
-    const existingUsers = JSON.parse(localStorage.getItem('users')) || [];
-    existingUsers.push({ username, email, password });
-    localStorage.setItem('users', JSON.stringify(existingUsers));
+    // Prepare the registration data
+    const registrationData = {
+      username,
+      email,
+      password,
+    };
 
-    console.log('Registered successfully:', { username, email, password });
-
-    // Navigate to login page
-    navigate('/login');
+    try {
+      // Send registration data to the API
+      const response = await axios.post('http://127.0.0.1:8000/authentication/register', registrationData);
+      
+      if (response.status === 200) {
+        console.log('Registered successfully:', response.data);
+        // Redirect to the login page after successful registration
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Registration failed:', error);
+      
+      // Check if error response exists and set appropriate error message
+      if (error.response && error.response.data) {
+        setError(error.response.data.detail || 'Failed to register. Please try again.');
+      } else {
+        setError('Failed to register. Please try again.');
+      }
+    }
   };
 
   return (

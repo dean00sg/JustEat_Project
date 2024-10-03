@@ -4,32 +4,57 @@ import { useAuth } from '../contexts/Authcontext';
 import '../styles/Login_regis.css';
 
 function Login() {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
-  const handleLogin = (e) => {
+  // Handle login form submission
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    // Get stored users
-    const users = JSON.parse(localStorage.getItem('users')) || [];
-    const user = users.find(user => user.email === email && user.password === password);
+    // Create form data in x-www-form-urlencoded format
+    const formData = new URLSearchParams();
+    formData.append('username', username);
+    formData.append('password', password);
 
-    if (user) {
-      login(); // Set authentication to true
-      navigate('/admin-menu');
-    } else {
-      setError('Invalid email or password');
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('http://127.0.0.1:8000/authentication/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData.toString(),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        const accessToken = data.access_token;
+        localStorage.setItem('token', accessToken);
+        login();
+        setUsername('');
+        setPassword('');
+        navigate('/homeadmin');
+      } else {
+        setError(data.message || 'Invalid username or password');
+      }
+    } catch (err) {
+      setError('Error logging in. Please try again later.');
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Redirect if already authenticated
   if (isAuthenticated) {
-    navigate('/admin-menu');
-    return null; // Prevent rendering of the login form
+    navigate('/homeadmin');
+    return null;
   }
 
   return (
@@ -37,11 +62,11 @@ function Login() {
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
         <div className="form-group">
-          <label>Email:</label>
+          <label>Username:</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="text"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
             required
           />
         </div>
@@ -55,7 +80,9 @@ function Login() {
           />
         </div>
         {error && <p className="error">{error}</p>}
-        <button type="submit">Login</button>
+        <button type="submit" disabled={loading}>
+          {loading ? 'Loading...' : 'Login'}
+        </button>
       </form>
       <a href="/register" className="link">Don't have an account? Register</a>
     </div>

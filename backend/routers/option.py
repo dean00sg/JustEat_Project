@@ -72,6 +72,16 @@ async def get_option(option_id: int, db: Session = Depends(get_session)):
 
     return db_option
 
+# Filter options by category_id (admin only)
+@router.get("/filter/", response_model=List[OptionResponse], dependencies=[Depends(get_current_user_role)])
+async def get_options_by_category_id(category_id: int, db: Session = Depends(get_session)):
+    options = db.query(Option).filter(Option.category_id == category_id).all()
+    
+    if not options:
+        raise HTTPException(status_code=404, detail="No options found for this category ID")
+    
+    return options
+
 @router.put("/{option_id}", response_model=OptionResponse, dependencies=[Depends(get_current_user_role)])
 async def update_option(
     option_id: int, 
